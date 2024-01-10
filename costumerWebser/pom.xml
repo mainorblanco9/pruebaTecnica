@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>PruebaTencica_Promerica</artifactId>
+	<artifactId>PruebaTec_Promerica</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>PruebaTencica_Promerica</name>
 	<description>Api Java Spring </description>
