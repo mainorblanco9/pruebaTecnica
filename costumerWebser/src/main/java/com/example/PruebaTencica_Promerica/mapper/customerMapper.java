@@ -29,12 +29,24 @@ public class customerMapper {
 
         customer entity = new customer();
         entity.setId(dto.getId());
-        entity.setId_cedula(Integer.parseInt(dto.getId_cedula()));
+        entity.setId_cedula(dto.getId_cedula());
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
         entity.setPhone(dto.getPhone());
         entity.setBirthdate(dto.getBirthdate());
         return entity;
+    }
+
+    public void updateEntityFromDto(customerDto dto, customer entity) {
+        if (dto == null || entity == null) {
+            return;
+        }
+
+        entity.setId_cedula(dto.getId_cedula());
+        entity.setFirstName(dto.getFirstName());
+        entity.setLastName(dto.getLastName());
+        entity.setPhone(dto.getPhone());
+        entity.setBirthdate(dto.getBirthdate());
     }
 
 }

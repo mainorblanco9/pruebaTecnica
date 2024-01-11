@@ -13,7 +13,7 @@ public interface customerRepository extends JpaRepository<customer, Long> {
 
     @Procedure(name = "sp_ingresar_cliente")
     public void ingresarCliente(
-            @Param("id_cedula") int idCedula,
+            @Param("id_cedula") String id_cedula,
             @Param("firstName") String firstName,
             @Param("lastName") String lastName,
             @Param("phone") String phone,
@@ -24,7 +24,7 @@ public interface customerRepository extends JpaRepository<customer, Long> {
     @Procedure(name = "sp_actualizar_cliente")
     public void actualizarCliente(
             @Param("id") Long id,
-            @Param("id_cedula") int idCedula,
+            @Param("id_cedula") String id_cedula,
             @Param("firstName") String firstName,
             @Param("lastName") String lastName,
             @Param("phone") String phone,

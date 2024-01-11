@@ -8,6 +8,7 @@ import com.example.PruebaTencica_Promerica.repository.customerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +31,16 @@ import java.util.stream.Collectors;
 
         customer customerEntity = customerMapper.toEntity(customerDto);
 
-        customerRepository.ingresarCliente(customerEntity.getId_cedula(), customerEntity.getFirstName(), customerEntity.getLastName(), customerEntity.getPhone(), customerEntity.getBirthdate());
+
+        customerRepository.ingresarCliente(
+                customerEntity.getId_cedula(),
+                customerEntity.getFirstName(),
+                customerEntity.getLastName(),
+                customerEntity.getPhone(),
+                customerEntity.getBirthdate()
+        );
+
+
         return customerDto;
     }
 
@@ -40,15 +50,34 @@ import java.util.stream.Collectors;
     }
 
     @Override
-    public customerDto updateCustomer(customerDto customerDto) {
+    public customerDto updateCustomer(customerDto customerDto) throws customerNotFoundExe {
 
-        customer customerEntity = customerMapper.toEntity(customerDto);
+        List<customer> customers = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula());
 
-        customerRepository.actualizarCliente(customerEntity.getId(), customerEntity.getId_cedula(), customerEntity.getFirstName(), customerEntity.getLastName(), customerEntity.getPhone(), customerEntity.getBirthdate());
-        return customerDto;
 
-     }
+        if (customers.isEmpty()) {
+            throw new customerNotFoundExe(String.format("No se encuentra el cliente con la cedula: %s No encontrado!", customerDto.getId_cedula()));
+        }
 
+
+        customer existingCustomer = customers.get(0);
+
+
+        customerMapper.updateEntityFromDto(customerDto, existingCustomer);
+
+
+        customerRepository.actualizarCliente(
+                existingCustomer.getId(),
+                existingCustomer.getId_cedula(),
+                existingCustomer.getFirstName(),
+                existingCustomer.getLastName(),
+                existingCustomer.getPhone(),
+                existingCustomer.getBirthdate()
+        );
+
+
+        return customerMapper.toDto(existingCustomer);
+    }
     @Override
     public customerDto getCustomerById(String id_cedula)throws customerNotFoundExe {
 

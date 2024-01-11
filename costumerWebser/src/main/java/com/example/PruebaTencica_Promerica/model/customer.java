@@ -20,7 +20,7 @@ public class customer {
     private Long id;
 
     @Column(length = 50)
-    private int id_cedula;
+    private String id_cedula;
 
     @Column(length = 20)
     private String firstName;
