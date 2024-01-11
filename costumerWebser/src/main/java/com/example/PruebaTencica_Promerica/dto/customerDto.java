@@ -13,4 +13,11 @@ public class customerDto {
     private String lastName;
     private String phone;
     private Date birthdate;
+
+    public customerDto(int idCedula, String firstName, String lastName, String phone, Date birthdate) {
+    }
+
+    public customerDto() {
+
+    }
 }

@@ -31,7 +31,7 @@ public interface customerRepository extends JpaRepository<customer, Long> {
             @Param("birthdate") Date birthdate
     );
     @Procedure(name = "sp_obtener_cliente_Id")
-    public List<customer> obtenerClientePorIdCedula(@Param("id_cedula") String idCedula);
+    public List<customer> obtenerClientePorIdCedula(@Param("id_cedula") String idCedula );
 
     @Procedure(name = "sp_obtener_cliente_fechaNacimiento_desc")
     List<customer> obtenerClientesOrdenadosPorFechaNacimientoDesc();
