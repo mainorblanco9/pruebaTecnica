@@ -2,6 +2,7 @@ package com.example.PruebaTencica_Promerica.dto;
 
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,10 +13,7 @@ public class customerDto {
     private String firstName;
     private String lastName;
     private String phone;
-    private Date birthdate;
-
-    public customerDto(int idCedula, String firstName, String lastName, String phone, Date birthdate) {
-    }
+    private String birthdate;
 
     public customerDto() {
 

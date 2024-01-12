@@ -3,19 +3,20 @@ package com.example.PruebaTencica_Promerica.service;
 import com.example.PruebaTencica_Promerica.dto.customerDto;
 import com.example.PruebaTencica_Promerica.exception.customerNotFoundExe;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface customerService {
 
 
     // Método para crear un cliente
-    public customerDto createCustomer(customerDto customerdto);
+    public customerDto createCustomer(customerDto customerdto) throws ParseException;
 
     // Método para eliminar un cliente por ID
     public void deleteCustomerById(String id_cedula) throws customerNotFoundExe;
 
     // Método para actualizar un cliente
-    public customerDto updateCustomer(customerDto customerDto) throws customerNotFoundExe;
+    public customerDto updateCustomer(customerDto customerDto) throws customerNotFoundExe, ParseException;
 
     // Método para obtener un cliente por ID
     public customerDto getCustomerById(String id_cedula) throws customerNotFoundExe;

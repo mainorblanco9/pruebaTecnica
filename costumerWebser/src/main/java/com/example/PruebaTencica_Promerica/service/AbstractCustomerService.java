@@ -1,5 +1,6 @@
 package com.example.PruebaTencica_Promerica.service;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.PruebaTencica_Promerica.dto.customerDto;
 import com.example.PruebaTencica_Promerica.exception.customerNotFoundExe;
 import com.example.PruebaTencica_Promerica.mapper.customerMapper;
@@ -7,6 +8,8 @@ import com.example.PruebaTencica_Promerica.model.customer;
 import com.example.PruebaTencica_Promerica.repository.customerRepository;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,29 +34,33 @@ import java.util.stream.Collectors;
 
         customer customerEntity = customerMapper.toEntity(customerDto);
 
-
-        customerRepository.ingresarCliente(
-                customerEntity.getId_cedula(),
-                customerEntity.getFirstName(),
-                customerEntity.getLastName(),
-                customerEntity.getPhone(),
-                customerEntity.getBirthdate()
-        );
-
-
+        try {
+            customerRepository.ingresarCliente(
+                    customerEntity.getId_cedula(),
+                    customerEntity.getFirstName(),
+                    customerEntity.getLastName(),
+                    customerEntity.getPhone(),
+                    customerDto.getBirthdate()
+            );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return customerDto;
     }
 
-    public void deleteCustomerById(String id_cedula) throws customerNotFoundExe {
-
+    public void deleteCustomerById(String id_cedula) {
         customerRepository.eliminarClientePorId(id_cedula);
     }
 
     @Override
     public customerDto updateCustomer(customerDto customerDto) throws customerNotFoundExe {
 
-        List<customer> customers = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula());
-
+        List<customer> customers = new ArrayList<>();
+        try {
+            customers = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula());
+}catch (Exception e){
+ System.out.println(e.getMessage());
+}
 
         if (customers.isEmpty()) {
             throw new customerNotFoundExe(String.format("No se encuentra el cliente con la cedula: %s No encontrado!", customerDto.getId_cedula()));
@@ -72,7 +79,7 @@ import java.util.stream.Collectors;
                 existingCustomer.getFirstName(),
                 existingCustomer.getLastName(),
                 existingCustomer.getPhone(),
-                existingCustomer.getBirthdate()
+                String.valueOf(existingCustomer.getBirthdate())
         );
 
 

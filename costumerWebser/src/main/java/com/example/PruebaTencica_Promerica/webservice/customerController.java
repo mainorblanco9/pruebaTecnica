@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.PruebaTencica_Promerica.service.AbstractCustomerService;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -25,8 +26,8 @@ public class customerController {
         customerDto createdCustomer = customerService.createCustomer(customerDto);
         return new ResponseEntity<>(createdCustomer, HttpStatus.CREATED);
     }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable String id_cedula) throws customerNotFoundExe {
+    @DeleteMapping("/delete/{id_cedula}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable String id_cedula) {
         customerService.deleteCustomerById(id_cedula);
         return new ResponseEntity<>("Cliente eliminado exitosamente", HttpStatus.OK);
     }
