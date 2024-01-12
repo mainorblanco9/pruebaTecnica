@@ -19,15 +19,15 @@ public interface customerService {
     public customerDto updateCustomer(customerDto customerDto) throws customerNotFoundExe, ParseException;
 
     // Método para obtener un cliente por ID
-    public customerDto getCustomerById(String id_cedula) throws customerNotFoundExe;
+    public customerDto getCustomerById(customerDto customerDto) throws customerNotFoundExe;
 
     // Método para listar clientes ordenados por fecha de nacimiento descendente
-    public List<customerDto> getCustomersOrderByBirthdateDesc();
+    public List<customerDto> getCustomersOrderByBirthdateDesc(customerDto customerDto);
 
     // Método para listar clientes ordenados por ID
-    public List<customerDto> getCustomersOrderById();
+    public List<customerDto> getCustomersOrderById(customerDto customerDto);
 
     // Método para listar clientes ordenados por nombre de manera ascendente
-    public List<customerDto> getCustomersOrderByFirstNameAsc();
+    public List<customerDto> getCustomersOrderByFirstNameAsc(customerDto customerDto);
 
 }

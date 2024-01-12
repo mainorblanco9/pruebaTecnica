@@ -37,25 +37,25 @@ public class customerController {
         return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
     @GetMapping("/getById/{id_cedula}")
-    public ResponseEntity<customerDto> getCustomerById(@PathVariable String id_cedula) throws customerNotFoundExe {
-        customerDto customer = customerService.getCustomerById(id_cedula);
+    public ResponseEntity<customerDto> getCustomerById(@RequestBody customerDto customerDto) throws customerNotFoundExe {
+        customerDto customer = customerService.getCustomerById(customerDto);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
     @GetMapping("/getByBirthdateDesc")
-    public ResponseEntity<List<customerDto>> getCustomersByBirthdateDesc() {
-        List<customerDto> customers = customerService.getCustomersOrderByBirthdateDesc();
+    public ResponseEntity<List<customerDto>> getCustomersByBirthdateDesc(@RequestBody customerDto customerDto) {
+        List<customerDto> customers = customerService.getCustomersOrderByBirthdateDesc(customerDto);
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
     @GetMapping("/getByIdAsc")
-    public ResponseEntity<List<customerDto>> getCustomersByIdAsc() {
-        List<customerDto> customers = customerService.getCustomersOrderById();
+    public ResponseEntity<List<customerDto>> getCustomersByIdAsc(@RequestBody customerDto customerDto) {
+        List<customerDto> customers = customerService.getCustomersOrderById(customerDto;
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @GetMapping("/getByFirstNameAsc")
-    public ResponseEntity<List<customerDto>> getCustomersByFirstNameAsc() {
-        List<customerDto> customers = customerService.getCustomersOrderByFirstNameAsc();
+    public ResponseEntity<List<customerDto>> getCustomersByFirstNameAsc(@RequestBody customerDto customerDto) {
+        List<customerDto> customers = customerService.getCustomersOrderByFirstNameAsc(customerDto);
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 

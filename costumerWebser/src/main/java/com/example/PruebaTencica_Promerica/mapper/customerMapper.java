@@ -18,7 +18,7 @@ public class customerMapper {
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setPhone(entity.getPhone());
-        //dto.setBirthdate(entity.getBirthdate());
+        dto.setBirthdate(entity.getBirthdate());
         return dto;
     }
 
@@ -33,7 +33,7 @@ public class customerMapper {
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
         entity.setPhone(dto.getPhone());
-        //entity.setBirthdate(dto.getBirthdate());
+        entity.setBirthdate(dto.getBirthdate());
         return entity;
     }
 
@@ -46,7 +46,7 @@ public class customerMapper {
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
         entity.setPhone(dto.getPhone());
-        //entity.setBirthdate(dto.getBirthdate());
+        entity.setBirthdate(dto.getBirthdate());
     }
 
 }

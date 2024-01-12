@@ -6,12 +6,12 @@ import com.example.PruebaTencica_Promerica.exception.customerNotFoundExe;
 import com.example.PruebaTencica_Promerica.mapper.customerMapper;
 import com.example.PruebaTencica_Promerica.model.customer;
 import com.example.PruebaTencica_Promerica.repository.customerRepository;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,62 +54,92 @@ import java.util.stream.Collectors;
 
     @Override
     public customerDto updateCustomer(customerDto customerDto) throws customerNotFoundExe {
-
-        List<customer> customers = new ArrayList<>();
         try {
-            customers = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula());
-}catch (Exception e){
- System.out.println(e.getMessage());
-}
 
-        if (customers.isEmpty()) {
-            throw new customerNotFoundExe(String.format("No se encuentra el cliente con la cedula: %s No encontrado!", customerDto.getId_cedula()));
+            List<Map<String, Object>> customersMapList = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula());
+
+
+            if (customersMapList.isEmpty()) {
+                throw new customerNotFoundExe(String.format("No se encuentra el cliente con la cedula: %s No encontrado!", customerDto.getId_cedula()));
+            }
+
+
+            customer existingCustomer = mapToCustomerEntity(customersMapList.get(0));
+
+
+            customerMapper.updateEntityFromDto(customerDto, existingCustomer);
+
+
+            customerRepository.actualizarCliente(
+
+                    existingCustomer.getId_cedula(),
+                    existingCustomer.getFirstName(),
+                    existingCustomer.getLastName(),
+                    existingCustomer.getPhone(),
+                    existingCustomer.getBirthdate()
+            );
+
+
+            return customerMapper.toDto(existingCustomer);
+
+        } catch (DataAccessException e) {
+
+            throw new RuntimeException("Error al actualizar el cliente: " + e.getMessage(), e);
+        } catch (customerNotFoundExe e) {
+
+            throw e;
+        } catch (Exception e) {
+
+            throw new RuntimeException("Error desconocido al actualizar el cliente: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public customerDto getCustomerById(customerDto customerDto) throws customerNotFoundExe {
+        try {
+
+            List<Map<String, Object>> customersMapList = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula());
 
 
-        customer existingCustomer = customers.get(0);
+            if (!customersMapList.isEmpty()) {
+
+                customer customerEntity = mapToCustomerEntity(customersMapList.get(0));
+
+                // Convierte la entidad customer a un DT
+                return customerMapper.toDto(customerEntity);
+            }
 
 
-        customerMapper.updateEntityFromDto(customerDto, existingCustomer);
+            throw new customerNotFoundExe("Cliente no encontrado con la cedula: " + id_cedula);
 
+        } catch (Exception e) {
 
-        customerRepository.actualizarCliente(
-                existingCustomer.getId(),
-                existingCustomer.getId_cedula(),
-                existingCustomer.getFirstName(),
-                existingCustomer.getLastName(),
-                existingCustomer.getPhone(),
-                String.valueOf(existingCustomer.getBirthdate())
-        );
+            throw new RuntimeException("Error al obtener el cliente: " + e.getMessage(), e);
+        }
+    }
+    private customer mapToCustomerEntity(Map<String, Object> customerMap) {
 
+        customer customerEntity = new customer();
 
-        return customerMapper.toDto(existingCustomer);
+        customerEntity.setId_cedula((String) customerMap.get("id_cedula"));
+
+        return customerEntity;
     }
     @Override
-    public customerDto getCustomerById(String id_cedula)throws customerNotFoundExe {
-
-        List<customer> customers = customerRepository.obtenerClientePorIdCedula(id_cedula);
-        if (!customers.isEmpty()) {
-            return customerMapper.toDto(customers.get(0));
-        }
-        throw new customerNotFoundExe("Cliente no encontrado");
-    }
-
-    @Override
-    public List<customerDto> getCustomersOrderByBirthdateDesc() {
-        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorFechaNacimientoDesc();
+    public List<customerDto> getCustomersOrderByBirthdateDesc(customerDto customerDto) {
+        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorFechaNacimientoDesc(customerDto.getId_cedula());
         return customers.stream().map(customerMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<customerDto> getCustomersOrderById() {
-        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorId();
+    public List<customerDto> getCustomersOrderById(customerDto customerDto) {
+        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorId(customerDto.getId_cedula());
         return customers.stream().map(customerMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<customerDto> getCustomersOrderByFirstNameAsc() {
-        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorPrimerNombreAsc();
+    public List<customerDto> getCustomersOrderByFirstNameAsc(customerDto customerDto) {
+        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorPrimerNombreAsc(customerDto.getId_cedula() );
         return customers.stream().map(customerMapper::toDto).collect(Collectors.toList());
     }
 }

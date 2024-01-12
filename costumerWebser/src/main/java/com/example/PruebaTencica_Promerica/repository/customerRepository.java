@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface customerRepository extends JpaRepository<customer, Long> {
 
@@ -23,22 +24,32 @@ public interface customerRepository extends JpaRepository<customer, Long> {
 
     @Procedure(procedureName = "sp_actualizar_cliente")
     public void actualizarCliente(
-            @Param("id") Long id,
             @Param("id_cedula") String id_cedula,
             @Param("firstName") String firstName,
             @Param("lastName") String lastName,
             @Param("phone") String phone,
             @Param("birthdate") String birthdate
     );
-    @Procedure(procedureName = "sp_obtener_cliente_Id")
-    public List<customer> obtenerClientePorIdCedula(@Param("id_cedula") String idCedula );
-
+    @Query(value = "CALL sp_obtener_cliente_id(:p_id_cedula, NULL, NULL, NULL, NULL, NULL)", nativeQuery = true)
+    List<Map<String, Object>> obtenerClientePorIdCedula(@Param("p_id_cedula") String idCedula,@Param("out_firstname") String firstName,
+                                                        @Param("out_lastname") String lastName,
+                                                        @Param("out_phone") String phone,
+                                                        @Param("out_birthdate") String birthdate);
     @Procedure(procedureName = "sp_obtener_cliente_fechaNacimiento_desc")
-    List<customer> obtenerClientesOrdenadosPorFechaNacimientoDesc();
+    List<customer> obtenerClientesOrdenadosPorFechaNacimientoDesc(@Param("p_id_cedula") String idCedula,@Param("out_firstname") String firstName,
+                                                                  @Param("out_lastname") String lastName,
+                                                                  @Param("out_phone") String phone,
+                                                                  @Param("out_birthdate") String birthdate);
 
     @Procedure(procedureName = "sp_Obtener_cliente_ordenado_porId")
-    List<customer> obtenerClientesOrdenadosPorId();
+    List<customer> obtenerClientesOrdenadosPorId(@Param("p_id_cedula") String idCedula,@Param("out_firstname") String firstName,
+                                                 @Param("out_lastname") String lastName,
+                                                 @Param("out_phone") String phone,
+                                                 @Param("out_birthdate") String birthdate);
 
     @Procedure(procedureName = "sp_Obtener_cliente_ordenado_primerNombre_Asc")
-    List<customer> obtenerClientesOrdenadosPorPrimerNombreAsc();
+    List<customer> obtenerClientesOrdenadosPorPrimerNombreAsc(@Param("p_id_cedula") String idCedula,@Param("out_firstname") String firstName,
+                                                              @Param("out_lastname") String lastName,
+                                                              @Param("out_phone") String phone,
+                                                              @Param("out_birthdate") String birthdate);
 }

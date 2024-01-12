@@ -35,8 +35,9 @@ public class customer {
 
 
     @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(length = 20)
-    private Date birthdate;
+    private String birthdate;
 
 
 }
