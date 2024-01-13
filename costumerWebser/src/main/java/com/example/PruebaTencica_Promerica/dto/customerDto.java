@@ -4,8 +4,12 @@ package com.example.PruebaTencica_Promerica.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
+
+
 @Data
 public class customerDto {
     private Long id ;

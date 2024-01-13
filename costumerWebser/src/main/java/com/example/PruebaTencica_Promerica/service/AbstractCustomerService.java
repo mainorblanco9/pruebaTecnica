@@ -1,6 +1,5 @@
 package com.example.PruebaTencica_Promerica.service;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.PruebaTencica_Promerica.dto.customerDto;
 import com.example.PruebaTencica_Promerica.exception.customerNotFoundExe;
 import com.example.PruebaTencica_Promerica.mapper.customerMapper;
@@ -9,8 +8,6 @@ import com.example.PruebaTencica_Promerica.repository.customerRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,11 +49,16 @@ import java.util.stream.Collectors;
         customerRepository.eliminarClientePorId(id_cedula);
     }
 
+
     @Override
     public customerDto updateCustomer(customerDto customerDto) throws customerNotFoundExe {
         try {
 
-            List<Map<String, Object>> customersMapList = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula());
+            List<Map<String, Object>> customersMapList = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula(),
+                    customerDto.getFirstName(),
+                    customerDto.getLastName(),
+                    customerDto.getPhone(),
+                    customerDto.getBirthdate());
 
 
             if (customersMapList.isEmpty()) {
@@ -71,7 +73,6 @@ import java.util.stream.Collectors;
 
 
             customerRepository.actualizarCliente(
-
                     existingCustomer.getId_cedula(),
                     existingCustomer.getFirstName(),
                     existingCustomer.getLastName(),
@@ -94,23 +95,32 @@ import java.util.stream.Collectors;
         }
     }
 
+
     @Override
     public customerDto getCustomerById(customerDto customerDto) throws customerNotFoundExe {
         try {
 
-            List<Map<String, Object>> customersMapList = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula());
+            List<Map<String, Object>> customersMapList = customerRepository.obtenerClientePorIdCedula(customerDto.getId_cedula(),
+                    customerDto.getFirstName(),
+                    customerDto.getLastName(),
+                    customerDto.getPhone(),
+                    customerDto.getBirthdate());
 
-
-            if (!customersMapList.isEmpty()) {
+            Map<String, Object> customerMap = customersMapList.get(0);
+            if (customerMap.get("out_firstname") != null ||
+                customerMap.get("out_lastname") != null ||
+                customerMap.get("out_lastname") != null ||
+                customerMap.get("out_phone") != null ||
+                customerMap.get("out_birthdate") != null) {
 
                 customer customerEntity = mapToCustomerEntity(customersMapList.get(0));
 
-                // Convierte la entidad customer a un DT
+
                 return customerMapper.toDto(customerEntity);
             }
 
 
-            throw new customerNotFoundExe("Cliente no encontrado con la cedula: " + id_cedula);
+            throw new customerNotFoundExe("Cliente no encontrado con la cedula: " +  customerDto.getId_cedula());
 
         } catch (Exception e) {
 
@@ -121,25 +131,41 @@ import java.util.stream.Collectors;
 
         customer customerEntity = new customer();
 
-        customerEntity.setId_cedula((String) customerMap.get("id_cedula"));
+        customerEntity.setId_cedula((String) customerMap.get("p_id_cedula"));
+        customerEntity.setFirstName((String) customerMap.get("out_firstname"));  // Ajusta según tus columnas
+        customerEntity.setLastName((String) customerMap.get("out_lastname"));
+        customerEntity.setPhone((String) customerMap.get("out_phone"));
+        customerEntity.setBirthdate((String) customerMap.get("out_birthdate"));
 
         return customerEntity;
     }
     @Override
     public List<customerDto> getCustomersOrderByBirthdateDesc(customerDto customerDto) {
-        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorFechaNacimientoDesc(customerDto.getId_cedula());
+        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorFechaNacimientoDesc(customerDto.getId_cedula(),
+                customerDto.getFirstName(),
+                customerDto.getLastName(),
+                customerDto.getPhone(),
+                customerDto.getBirthdate());
         return customers.stream().map(customerMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public List<customerDto> getCustomersOrderById(customerDto customerDto) {
-        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorId(customerDto.getId_cedula());
+        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorId(customerDto.getId_cedula(),
+                customerDto.getFirstName(),
+                customerDto.getLastName(),
+                customerDto.getPhone(),
+                customerDto.getBirthdate());
         return customers.stream().map(customerMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public List<customerDto> getCustomersOrderByFirstNameAsc(customerDto customerDto) {
-        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorPrimerNombreAsc(customerDto.getId_cedula() );
+        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorPrimerNombreAsc(customerDto.getId_cedula(),
+                customerDto.getFirstName(),
+                customerDto.getLastName(),
+                customerDto.getPhone(),
+                customerDto.getBirthdate());
         return customers.stream().map(customerMapper::toDto).collect(Collectors.toList());
     }
 }

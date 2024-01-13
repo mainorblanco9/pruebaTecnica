@@ -36,7 +36,7 @@ public class customerController {
         customerDto updatedCustomer = customerService.updateCustomer(customerDto);
         return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
-    @GetMapping("/getById/{id_cedula}")
+    @GetMapping("/getById")
     public ResponseEntity<customerDto> getCustomerById(@RequestBody customerDto customerDto) throws customerNotFoundExe {
         customerDto customer = customerService.getCustomerById(customerDto);
         return new ResponseEntity<>(customer, HttpStatus.OK);
@@ -49,7 +49,7 @@ public class customerController {
     }
     @GetMapping("/getByIdAsc")
     public ResponseEntity<List<customerDto>> getCustomersByIdAsc(@RequestBody customerDto customerDto) {
-        List<customerDto> customers = customerService.getCustomersOrderById(customerDto;
+        List<customerDto> customers = customerService.getCustomersOrderById(customerDto);
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
