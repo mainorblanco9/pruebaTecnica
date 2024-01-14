@@ -40,12 +40,13 @@ public interface customerRepository extends JpaRepository<customer, Long> {
     @Param("out_phone") String phone,
     @Param("out_birthdate") String birthdate);
 
-    @Procedure(procedureName = "sp_obtener_cliente_fechaNacimiento_desc(NULL, NULL, NULL, NULL, NULL, NULL)")
-    List<customer> obtenerClientesOrdenadosPorFechaNacimientoDesc(@Param("p_id_cedula") String idCedula,
-                                                                  @Param("out_firstname") String firstName,
-                                                                  @Param("out_lastname") String lastName,
-                                                                  @Param("out_phone") String phone,
-                                                                  @Param("out_birthdate") String birthdate);
+
+    @Query(value = "CALL sp_obtener_cliente_fechaNacimiento_desc(:out_id_cedulas, :out_firstNames, :out_lastNames, :out_phones, :out_birthdates)", nativeQuery = true)
+    List<Map<String, Object>> obtenerClientesOrdenadosPorFechaNacimientoDesc(@Param("out_id_cedulas") String[] out_id_cedulas,
+                                                                             @Param("out_firstNames") String[] out_firstNames,
+                                                                             @Param("out_lastNames") String[] out_lastNames,
+                                                                             @Param("out_phones") String[] out_phones,
+                                                                             @Param("out_birthdates") String[] out_birthdates);
 
 
     @Query(value = "CALL sp_obtener_clientes_ordenado_porid(:out_id_cedulas, :out_firstNames, :out_lastNames, :out_phones, :out_birthdates)", nativeQuery = true)

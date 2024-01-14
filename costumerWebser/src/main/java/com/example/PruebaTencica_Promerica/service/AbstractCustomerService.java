@@ -141,13 +141,52 @@ import java.util.stream.Collectors;
     }
     @Override
     public List<customerDto> getCustomersOrderByBirthdateDesc(customerDto customerDto) {
-        List<customer> customers = customerRepository.obtenerClientesOrdenadosPorFechaNacimientoDesc(customerDto.getId_cedula(),
-                customerDto.getFirstName(),
-                customerDto.getLastName(),
-                customerDto.getPhone(),
-                customerDto.getBirthdate());
-        return customers.stream().map(customerMapper::toDto).collect(Collectors.toList());
+        try {
+            List<Map<String, Object>> results = customerRepository.obtenerClientesOrdenadosPorFechaNacimientoDesc(
+                    new String[1], new String[1], new String[1], new String[1], new String[1]
+            );
+            List<customerDto> customerDtos = new ArrayList<>();
+
+            int size = ((String[]) results.get(0).get("out_id_cedulas")).length;
+
+            for (int i = 0; i < size; i++) {
+                customerDto dto = new customerDto();
+
+                for (Map<String, Object> result : results) {
+                    String[] idCedulas = (String[]) result.get("out_id_cedulas");
+                    String[] firstNames = (String[]) result.get("out_firstNames");
+                    String[] lastNames = (String[]) result.get("out_lastNames");
+                    String[] phones = (String[]) result.get("out_phones");
+                    String[] birthdates = (String[]) result.get("out_birthdates");
+
+                    if (idCedulas != null && idCedulas.length > i) {
+                        dto.setId_cedula(idCedulas[i]);
+                    }
+                    if (firstNames != null && firstNames.length > i) {
+                        dto.setFirstName(firstNames[i]);
+                    }
+                    if (lastNames != null && lastNames.length > i) {
+                        dto.setLastName(lastNames[i]);
+                    }
+                    if (phones != null && phones.length > i) {
+                        dto.setPhone(phones[i]);
+                    }
+                    if (birthdates != null && birthdates.length > i) {
+                        dto.setBirthdate(birthdates[i]);
+                    }
+                }
+
+                customerDtos.add(dto);
+            }
+
+            return customerDtos;
+
+        } catch (Exception e) {
+            System.out.println("Error al obtener los clientes: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
+
     @Override
     public List<customerDto> getCustomersOrderById(customerDto customerDto) {
         try {
