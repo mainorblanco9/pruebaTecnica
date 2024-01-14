@@ -19,7 +19,17 @@ public class customerDto {
     private String phone;
     private String birthdate;
 
-    public customerDto() {
+    // Constructor que inicializa todos los campos
+    public customerDto(Long id, String id_cedula, String firstName, String lastName, String phone, String birthdate) {
+        this.id = id;
+        this.id_cedula = id_cedula;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.birthdate = birthdate;
+    }
 
+    // Constructor vacío
+    public customerDto() {
     }
 }

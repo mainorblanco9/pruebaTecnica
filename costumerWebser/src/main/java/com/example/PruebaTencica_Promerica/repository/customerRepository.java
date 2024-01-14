@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
+
+import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,13 +47,14 @@ public interface customerRepository extends JpaRepository<customer, Long> {
                                                                   @Param("out_phone") String phone,
                                                                   @Param("out_birthdate") String birthdate);
 
-    @Procedure(procedureName = "sp_Obtener_cliente_ordenado_porId(NULL, NULL, NULL, NULL, NULL, NULL)")
-    List<customer> obtenerClientesOrdenadosPorId(@Param("p_id_cedula") String idCedula,@Param("out_firstname") String firstName,
-                                                 @Param("out_lastname") String lastName,
-                                                 @Param("out_phone") String phone,
-                                                 @Param("out_birthdate") String birthdate);
 
-    @Procedure(procedureName = "sp_Obtener_cliente_ordenado_primerNombre_Asc(NULL, NULL, NULL, NULL, NULL, NULL)")
+    @Query(value = "CALL sp_obtener_clientes_ordenado_porid(:out_id_cedulas, :out_firstNames, :out_lastNames, :out_phones, :out_birthdates)", nativeQuery = true)
+    List<Map<String, Object>> obtenerClientesOrdenadosPorId( @Param("out_id_cedulas") String[] out_id_cedulas,
+                                                             @Param("out_firstNames") String[] out_firstNames,
+                                                             @Param("out_lastNames") String[] out_lastNames,
+                                                             @Param("out_phones") String[] out_phones,
+                                                             @Param("out_birthdates") String[] out_birthdates);
+    @Procedure(procedureName = "sp_Obtener_cliente_ordenado_primerNombre_Asc(NULL, NULL, NULL, NULL, NULL)")
     List<customer> obtenerClientesOrdenadosPorPrimerNombreAsc(@Param("p_id_cedula") String idCedula,
                                                               @Param("out_firstname") String firstName,
                                                               @Param("out_lastname") String lastName,
