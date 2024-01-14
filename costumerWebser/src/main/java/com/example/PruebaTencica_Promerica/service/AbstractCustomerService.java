@@ -117,7 +117,7 @@ import java.util.stream.Collectors;
         customer customerEntity = new customer();
 
         customerEntity.setId_cedula((String) customerMap.get("p_id_cedula"));
-        customerEntity.setFirstName((String) customerMap.get("out_firstname"));  // Ajusta según tus columnas
+        customerEntity.setFirstName((String) customerMap.get("out_firstname"));
         customerEntity.setLastName((String) customerMap.get("out_lastname"));
         customerEntity.setPhone((String) customerMap.get("out_phone"));
         customerEntity.setBirthdate((String) customerMap.get("out_birthdate"));
