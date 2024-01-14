@@ -36,26 +36,32 @@ public class customerController {
         customerDto updatedCustomer = customerService.updateCustomer(customerDto);
         return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
-    @GetMapping("/getById")
-    public ResponseEntity<customerDto> getCustomerById(@RequestBody customerDto customerDto) throws customerNotFoundExe {
-        customerDto customer = customerService.getCustomerById(customerDto);
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+    @GetMapping("/getById/{idCedula}")
+    public ResponseEntity<customerDto> getCustomerById(@PathVariable String idCedula) {
+        try {
+            customerDto customer = customerService.getCustomerById(idCedula);
+            return new ResponseEntity<>(customer, HttpStatus.OK);
+        } catch (customerNotFoundExe e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/getByBirthdateDesc")
-    public ResponseEntity<List<customerDto>> getCustomersByBirthdateDesc(@RequestBody customerDto customerDto) {
-        List<customerDto> customers = customerService.getCustomersOrderByBirthdateDesc(customerDto);
+    public ResponseEntity<List<customerDto>> getCustomersByBirthdateDesc() {
+        List<customerDto> customers = customerService.getCustomersOrderByBirthdateDesc();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
     @GetMapping("/getByIdAsc")
-    public ResponseEntity<List<customerDto>> getCustomersByIdAsc(@RequestBody customerDto customerDto) {
-        List<customerDto> customers = customerService.getCustomersOrderById(customerDto);
+    public ResponseEntity<List<customerDto>> getCustomersByIdAsc() {
+        List<customerDto> customers = customerService.getCustomersOrderById();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @GetMapping("/getByFirstNameAsc")
-    public ResponseEntity<List<customerDto>> getCustomersByFirstNameAsc(@RequestBody customerDto customerDto) {
-        List<customerDto> customers = customerService.getCustomersOrderByFirstNameAsc(customerDto);
+    public ResponseEntity<List<customerDto>> getCustomersByFirstNameAsc() {
+        List<customerDto> customers = customerService.getCustomersOrderByFirstNameAsc();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 

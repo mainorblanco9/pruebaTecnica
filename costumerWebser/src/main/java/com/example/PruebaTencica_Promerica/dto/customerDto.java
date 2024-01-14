@@ -19,9 +19,8 @@ public class customerDto {
     private String phone;
     private String birthdate;
 
-    // Constructor que inicializa todos los campos
-    public customerDto(Long id, String id_cedula, String firstName, String lastName, String phone, String birthdate) {
-        this.id = id;
+
+    public customerDto(String id_cedula, String firstName, String lastName, String phone, String birthdate) {
         this.id_cedula = id_cedula;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,7 +28,8 @@ public class customerDto {
         this.birthdate = birthdate;
     }
 
-    // Constructor vacío
+
     public customerDto() {
+
     }
 }
