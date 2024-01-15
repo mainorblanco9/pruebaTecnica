@@ -21,22 +21,22 @@ public class customerController {
         this.customerService = customerService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/crearcliente")
     public ResponseEntity<customerDto> createCustomer(@RequestBody customerDto customerDto) {
         customerDto createdCustomer = customerService.createCustomer(customerDto);
         return new ResponseEntity<>(createdCustomer, HttpStatus.CREATED);
     }
-    @DeleteMapping("/delete/{id_cedula}")
+    @DeleteMapping("/eliminarcliente/{id_cedula}")
     public ResponseEntity<String> deleteCustomer(@PathVariable String id_cedula) {
         customerService.deleteCustomerById(id_cedula);
         return new ResponseEntity<>("Cliente eliminado exitosamente", HttpStatus.OK);
     }
-    @PutMapping("/update")
+    @PutMapping("/actualizar")
     public ResponseEntity<customerDto> updateCustomer(@RequestBody customerDto customerDto) throws customerNotFoundExe {
         customerDto updatedCustomer = customerService.updateCustomer(customerDto);
         return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
-    @GetMapping("/getById/{idCedula}")
+    @GetMapping("/obtenerclienteporId/{idCedula}")
     public ResponseEntity<customerDto> getCustomerById(@PathVariable String idCedula) {
         try {
             customerDto customer = customerService.getCustomerById(idCedula);
@@ -48,18 +48,18 @@ public class customerController {
         }
     }
 
-    @GetMapping("/getByBirthdateDesc")
+    @GetMapping("/ordenadosPorFechadeNacimientoDescendente")
     public ResponseEntity<List<customerDto>> getCustomersByBirthdateDesc() {
         List<customerDto> customers = customerService.getCustomersOrderByBirthdateDesc();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
-    @GetMapping("/getByIdAsc")
+    @GetMapping("/OrdenadosPorId")
     public ResponseEntity<List<customerDto>> getCustomersByIdAsc() {
         List<customerDto> customers = customerService.getCustomersOrderById();
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
-    @GetMapping("/getByFirstNameAsc")
+    @GetMapping("/OrdenadosPorNombreDeManeraAscendente")
     public ResponseEntity<List<customerDto>> getCustomersByFirstNameAsc() {
         List<customerDto> customers = customerService.getCustomersOrderByFirstNameAsc();
         return new ResponseEntity<>(customers, HttpStatus.OK);

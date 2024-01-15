@@ -34,14 +34,14 @@ class PruebaTencicaPromericaApplicationTests {
 		customerDto customer = new customerDto("451147414", "PruebaUnitaria", "ApellidoPrueba", "021101744", "1990-01-01");
 		String customerJson = objectMapper.writeValueAsString(customer);
 
-		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/customer/create")
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/customer/crearcliente")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(customerJson))
 				.andExpect(status().isCreated());
 	}
 	@Test
 	void testDeleteCustomer() throws Exception {
-		mockMvc.perform(delete("/customer/delete/{id_cedula}", "504110673"))
+		mockMvc.perform(delete("/customer/eliminarcliente/{id_cedula}", "504110673"))
 				.andExpect(status().isOk());
 	}
 
@@ -51,32 +51,32 @@ class PruebaTencicaPromericaApplicationTests {
 		String customerJson = objectMapper.writeValueAsString(customer);
 
 		mockMvc.perform(MockMvcRequestBuilders
-						.request(HttpMethod.PUT, "/customer/update")
+						.request(HttpMethod.PUT, "/customer/actualizar")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(customerJson.getBytes()))
 				.andExpect(status().isOk());
 	}
 	@Test
 	void testGetCustomerById() throws Exception {
-		mockMvc.perform(get("/customer/getById/{idCedula}", "504110673"))
+		mockMvc.perform(get("/customer/obtenerclienteporId/{idCedula}", "504110673"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	void testGetCustomersByBirthdateDesc() throws Exception {
-		mockMvc.perform(get("/customer/getByBirthdateDesc"))
+		mockMvc.perform(get("/customer/ordenadosPorFechadeNacimientoDescendente"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	void testGetCustomersByIdAsc() throws Exception {
-		mockMvc.perform(get("/customer/getByIdAsc"))
+		mockMvc.perform(get("/customer/OrdenadosPorId"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	void testGetCustomersByFirstNameAsc() throws Exception {
-		mockMvc.perform(get("/customer/getByFirstNameAsc"))
+		mockMvc.perform(get("/customer/OrdenadosPorNombreDeManeraAscendente"))
 				.andExpect(status().isOk());
 	}
 }
