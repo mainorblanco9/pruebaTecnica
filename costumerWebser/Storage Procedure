@@ -1,0 +1,248 @@
+:___________________________________________________
+Actualizar:
+
+CREATE OR REPLACE PROCEDURE public.sp_actualizar_cliente(
+IN prop_id_cedula character varying,
+IN prop_firstname character varying,
+IN prop_lastname character varying,
+IN prop_phone character varying,
+IN prop_birthdate character varying)
+LANGUAGE 'plpgsql'
+AS $BODY$
+
+BEGIN
+
+    IF prop_id_cedula IS NULL OR prop_firstname IS NULL OR prop_phone IS NULL THEN
+        RAISE EXCEPTION 'Los parámetros de entrada no pueden ser nulos.';
+    END IF;
+    -- Actualizar el registro del cliente con el id especificado
+    UPDATE customer
+    SET id_cedula = prop_id_cedula,
+        first_name = prop_firstname,
+        last_name = prop_lastname,
+        phone = prop_phone,
+        birthdate = prop_birthdate
+    WHERE id_cedula = prop_id_cedula;
+    -- Verificar si se actualizó algún registro
+    IF FOUND THEN
+        -- Actualización realizada correctamente
+        RETURN;
+    ELSE
+        -- No se encontró cliente con el id especificado
+        RAISE EXCEPTION 'No se encontró un cliente con el id especificado.';
+    END IF;
+END;
+$BODY$;
+
+________________________________________________________
+
+Eliminar:
+
+CREATE OR REPLACE PROCEDURE public.sp_eliminar_cliente(
+IN prop_id_cedula character varying)
+LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    -- Eliminar el registro
+    DELETE FROM customer
+    WHERE id_cedula = prop_id_cedula;
+END;
+$BODY$;
+
+_____________________________________________
+
+Ingresar Cliente
+
+CREATE OR REPLACE PROCEDURE public.sp_ingresar_cliente(
+IN p_id_cedula character varying,
+IN p_firstname character varying,
+IN p_lastname character varying,
+IN p_phone character varying,
+IN p_birthdate character varying)
+LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    birthdate_date date;
+BEGIN
+birthdate_date := to_date(p_birthdate, 'YYYY-MM-DD');
+    INSERT INTO customer (id_cedula, first_name, last_name, phone, birthdate)
+    VALUES (p_id_cedula, p_firstName, p_lastName, p_phone, birthdate_date);
+END;
+$BODY$;
+
+____________________________________________________
+
+sp_obtener_cliente_fechanacimiento_desc
+
+CREATE OR REPLACE PROCEDURE public.sp_obtener_cliente_fechanacimiento_desc(
+OUT out_id_cedulas character varying[],
+OUT out_firstnames character varying[],
+OUT out_lastnames character varying[],
+OUT out_phones character varying[],
+OUT out_birthdates character varying[])
+LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    cliente_record RECORD;
+    indice INTEGER := 1;
+BEGIN
+   
+    out_id_cedulas := '{}';
+    out_firstNames := '{}';
+    out_lastNames := '{}';
+    out_phones := '{}';
+    out_birthdates := '{}';
+
+   
+    FOR cliente_record IN
+        SELECT id_cedula, first_name, last_name, phone, birthdate
+        FROM customer
+        ORDER BY birthdate desc
+    LOOP
+       
+        out_id_cedulas := array_append(out_id_cedulas, cliente_record.id_cedula);
+        out_firstNames := array_append(out_firstNames, cliente_record.first_name);
+        out_lastNames := array_append(out_lastNames, cliente_record.last_name);
+        out_phones := array_append(out_phones, cliente_record.phone);
+        out_birthdates := array_append(out_birthdates, cliente_record.birthdate);
+       
+     
+        indice := indice + 1;
+    END LOOP;
+
+ 
+    IF array_length(out_id_cedulas, 1) = 0 THEN
+        RAISE EXCEPTION 'No se encontraron clientes.';
+    END IF;
+
+END;
+$BODY$;
+
+____________________________________________________
+sp_obtener_cliente_id
+
+CREATE OR REPLACE PROCEDURE public.sp_obtener_cliente_id(
+INOUT p_id_cedula character varying,
+OUT out_firstname character varying,
+OUT out_lastname character varying,
+OUT out_phone character varying,
+OUT out_birthdate character varying)
+LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+   
+    SELECT id_cedula, first_name, last_name, phone, birthdate
+    INTO p_id_cedula, out_firstname, out_lastname, out_phone, out_birthdate
+    FROM customer
+    WHERE id_cedula = p_id_cedula;
+
+ 
+    IF NOT FOUND THEN
+        p_id_cedula := NULL;
+        out_firstname := NULL;
+        out_lastname := NULL;
+        out_phone := NULL;
+        out_birthdate := NULL;
+    END IF;
+
+EXCEPTION
+   
+    WHEN others THEN
+        RAISE NOTICE 'Error al obtener el cliente: %', SQLERRM;
+END;
+$BODY$;
+
+__________________________________________________________
+sp_obtener_cliente_ordenado_primernombre_asc
+
+CREATE OR REPLACE PROCEDURE public.sp_obtener_cliente_ordenado_primernombre_asc(
+OUT out_id_cedulas character varying[],
+OUT out_firstnames character varying[],
+OUT out_lastnames character varying[],
+OUT out_phones character varying[],
+OUT out_birthdates character varying[])
+LANGUAGE 'plpgsql'
+AS $BODY$
+
+DECLARE
+    cliente_record RECORD;
+    indice INTEGER := 1;
+BEGIN
+   
+    out_id_cedulas := '{}';
+    out_firstNames := '{}';
+    out_lastNames := '{}';
+    out_phones := '{}';
+    out_birthdates := '{}';
+
+   
+    FOR cliente_record IN
+        SELECT id_cedula, first_name, last_name, phone, birthdate
+        FROM customer
+        ORDER BY first_name desc
+    LOOP
+       
+        out_id_cedulas := array_append(out_id_cedulas, cliente_record.id_cedula);
+        out_firstNames := array_append(out_firstNames, cliente_record.first_name);
+        out_lastNames := array_append(out_lastNames, cliente_record.last_name);
+        out_phones := array_append(out_phones, cliente_record.phone);
+        out_birthdates := array_append(out_birthdates, cliente_record.birthdate);
+       
+     
+        indice := indice + 1;
+    END LOOP;
+
+ 
+    IF array_length(out_id_cedulas, 1) = 0 THEN
+        RAISE EXCEPTION 'No se encontraron clientes.';
+    END IF;
+
+END;
+$BODY$;
+__________________________________________________
+sp_obtener_clientes_ordenado_porid
+
+
+CREATE OR REPLACE PROCEDURE public.sp_obtener_clientes_ordenado_porid(
+OUT out_id_cedulas character varying[],
+OUT out_firstnames character varying[],
+OUT out_lastnames character varying[],
+OUT out_phones character varying[],
+OUT out_birthdates character varying[])
+LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    cliente_record RECORD;
+    indice INTEGER := 1;  -- Índice para rastrear las posiciones en los arrays
+BEGIN
+    -- Inicializar arrays vacíos
+    out_id_cedulas := '{}';
+    out_firstNames := '{}';
+    out_lastNames := '{}';
+    out_phones := '{}';
+    out_birthdates := '{}';
+
+    -- Iterar a través de los clientes ordenados por ID
+    FOR cliente_record IN
+        SELECT id_cedula, first_name, last_name, phone, birthdate
+        FROM customer
+        ORDER BY id_cedula
+    LOOP
+        -- Añadir los valores actuales a los arrays
+        out_id_cedulas := array_append(out_id_cedulas, cliente_record.id_cedula);
+        out_firstNames := array_append(out_firstNames, cliente_record.first_name);
+        out_lastNames := array_append(out_lastNames, cliente_record.last_name);
+        out_phones := array_append(out_phones, cliente_record.phone);
+        out_birthdates := array_append(out_birthdates, cliente_record.birthdate);
+       
+        -- Incrementar el índice
+        indice := indice + 1;
+    END LOOP;
+
+    -- Verificar si se encontraron clientes
+    IF array_length(out_id_cedulas, 1) = 0 THEN
+        RAISE EXCEPTION 'No se encontraron clientes.';
+    END IF;
+
+END;
+$BODY$;
